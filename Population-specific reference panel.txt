@@ -1,0 +1,13 @@
+*Population-specific reference panels*: These are datasets containing genetic information (mitogenome sequences) from a specific group of individuals who belong to the same population or share a common ancestry. These panels are tailored to a specific population, meaning they better represent the genetic characteristics and variations of that group.
+
+*Generic panels*: These are broader datasets that include genetic information from diverse populations worldwide, regardless of their ancestral or geographic origins. While comprehensive, they may not accurately capture the unique genetic patterns of specific populations.
+
+*Imputation accuracy*: Imputation is the process of filling in missing data in genetic sequences, such as gaps in ancient DNA caused by degradation or low sequencing quality. Accuracy refers to how correctly the missing genetic information is reconstructed or predicted.
+
+*The hypothesis*: Using population-specific panels (rather than generic panels) improves the accuracy of the imputation process for ancient DNA. This is because the genetic characteristics of the specific population are more likely to match the genetic patterns of the ancient DNA sample, reducing errors caused by genetic variations unique to other populations.
+
+*Insights into population ancestry and genomic integrity*: By reconstructing ancient DNA more accurately, researchers can:
+1. Better understand the ancestry of the ancient individual or population (e.g., migration patterns, maternal lineages, and historical connections).
+2. Ensure the genomic data's integrity by reducing errors or inconsistencies caused by mismatched imputation.
+
+For example, if you're working with ancient remains from a specific region, using a reference panel of DNA sequences from populations historically related to that region will likely produce more accurate and meaningful results than using a global dataset with unrelated populations.
