@@ -11,3 +11,6 @@
 2. Ensure the genomic data's integrity by reducing errors or inconsistencies caused by mismatched imputation.
 
 For example, if you're working with ancient remains from a specific region, using a reference panel of DNA sequences from populations historically related to that region will likely produce more accurate and meaningful results than using a global dataset with unrelated populations.
+
+
+https://www.ncbi.nlm.nih.gov/sra/SRX9145191[accn]
