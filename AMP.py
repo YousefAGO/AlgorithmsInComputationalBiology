@@ -2,7 +2,7 @@ import random
 
 import pandas as pd
 
-MAX_SEQ_NUM = 5000
+MAX_SEQ_NUM = 10000
 NUMBER_OF_SEQ = 154
 
 def preprocess_data(data_path, output_path, label):
@@ -68,6 +68,13 @@ def preprocess_data(data_path, output_path, label):
     lengths = []
     for peptide in random_peptides:
         lengths.append(len(peptide))
+
+    # sample NUMBER_OF_SEQ indexes from the list of random peptides
+    index_list = range(len(random_peptides))
+    sampled_indexes = random.sample(index_list, NUMBER_OF_SEQ)
+    random_peptides = [random_peptides[i] for i in sampled_indexes]
+    lengths = [lengths[i] for i in sampled_indexes]
+
     # Create a DataFrame with Label = 0 (Non-AMPs)
     df = pd.DataFrame({"sequence": random_peptides[:NUMBER_OF_SEQ], "label": [label]*NUMBER_OF_SEQ})
 
@@ -91,4 +98,4 @@ def draw_len_hist():
     plt.show()
 
 if __name__ == '__main__':
-    preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP.csv", 0)
+    preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP3.csv", 0)
