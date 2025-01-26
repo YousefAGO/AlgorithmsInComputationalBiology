@@ -1,0 +1,102 @@
+import torch
+import esm
+import pandas as pd
+import numpy as np
+from tqdm import tqdm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.model_selection import train_test_split
+
+
+# Step 1: Load Dataset
+def load_dataset(file_path):
+    """
+    Load the AMP dataset from a CSV file.
+    Args:
+        file_path (str): Path to the CSV file containing sequences and labels.
+    Returns:
+        sequences (list): List of peptide sequences.
+        labels (list): Corresponding labels (1 for AMP, 0 for non-AMP).
+    """
+    df = pd.read_csv(r"C:\Users\User\PycharmProjects\hackathon\human_AMPs_dataset.csv")
+    sequences = df["sequence"].tolist()
+    labels = df["label"].tolist()
+    return sequences, labels
+
+
+# Step 2: Extract Features Using ESM-2
+def extract_features(sequences, batch_size=32, model_name="esm2_t6_8M_UR50D"):
+    """
+    Extract ESM-2 embeddings for peptide sequences in batches.
+    Args:
+        sequences (list): List of peptide sequences.
+        batch_size (int): Number of sequences to process per batch.
+        model_name (str): Name of the pre-trained ESM-2 model to use.
+    Returns:
+        np.ndarray: Array of embeddings for each sequence.
+    """
+    print("Loading ESM-2 model...")
+    model, alphabet = esm.pretrained._dict_[model_name]()
+    model = model.eval().cuda() if torch.cuda.is_available() else model.eval()
+    batch_converter = alphabet.get_batch_converter()
+
+    embeddings = []
+    print("Extracting features...")
+    for i in tqdm(range(0, len(sequences), batch_size), desc="Batches"):
+        batch_sequences = [(str(j), seq) for j, seq in enumerate(sequences[i:i + batch_size])]
+        _, _, batch_tokens = batch_converter(batch_sequences)
+        batch_tokens = batch_tokens.cuda() if torch.cuda.is_available() else batch_tokens
+        with torch.no_grad():
+            results = model(batch_tokens, repr_layers=[6])
+            batch_embeddings = results["representations"][6].mean(1).cpu().numpy()  # Mean pooling
+        embeddings.append(batch_embeddings)
+
+    return np.vstack(embeddings)
+
+
+# Step 3: Train and Evaluate Classifier
+def train_and_evaluate(X, y):
+    """
+    Train a Random Forest classifier and evaluate its performance.
+    Args:
+        X (np.ndarray): Feature matrix (embeddings).
+        y (list): Labels for each sequence.
+    """
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Train a Random Forest classifier
+    print("Training Random Forest classifier...")
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = clf.predict(X_test)
+
+    # Evaluate performance
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+
+    print("\nModel Evaluation:")
+    print(f"Accuracy: {accuracy:.2f}")
+    print(f"Precision: {precision:.2f}")
+    print(f"Recall: {recall:.2f}")
+    print(f"F1 Score: {f1:.2f}")
+
+
+# Main Function
+if _name_ == "_main_":
+    # File path to your dataset
+    file_path = "amp_dataset.csv"  # Ensure the CSV has 'sequence' and 'label' columns
+
+    # Step 1: Load Dataset
+    print("Loading dataset...")
+    sequences, labels = load_dataset(file_path)
+
+    # Step 2: Extract Features Using ESM-2
+    embeddings = extract_features(sequences)
+
+    # Step 3: Train and Evaluate Classifier
+    train_and_evaluate(embeddings, labels)
