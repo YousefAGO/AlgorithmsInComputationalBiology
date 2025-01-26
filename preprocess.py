@@ -5,6 +5,7 @@ import pandas as pd
 MAX_SEQ_NUM = 10000
 NUMBER_OF_SEQ = 154
 
+
 def preprocess_data(data_path, output_path, label):
     import pandas as pd
 
@@ -40,6 +41,7 @@ def preprocess_data(data_path, output_path, label):
         lengths.append(length)
 
     print(f"✅ Conversion complete! Saved as: {csv_file}")
+
     # Function to extract random peptide fragments
     def extract_random_peptides(protein_seq, num_peptides=3, min_len=5, max_len=200):
         peptides = []
@@ -97,13 +99,8 @@ def draw_len_hist():
     plt.grid(axis="y", alpha=0.75)
     plt.show()
 
-if __name__ == '__main__':
-    # preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP4.csv", 0)
-    # preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP5.csv", 0)
 
-    # merge the two csv files
-    path1 = "none-AMP4.csv"
-    path2 = "human_AMPs_dataset.csv"
+def merge_files(path1, path2, output_path):
     df1 = pd.read_csv(path1)
     df2 = pd.read_csv(path2)
     df = pd.concat([df1, df2], ignore_index=True)
@@ -112,4 +109,15 @@ if __name__ == '__main__':
     df = df.sample(frac=1).reset_index(drop=True)
 
     # save the merged file
-    df.to_csv("total_dataset.csv", index=False)
+    df.to_csv(output_path, index=False)
+
+
+if __name__ == '__main__':
+    # preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP4.csv", 0)
+    # preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP5.csv", 0)
+
+    # merge the two csv files
+    path1 = "none-AMP4.csv"
+    path2 = "human_AMPs_dataset.csv"
+    output_path = "merged_dataset.csv"
+    # merge_files(path1, path2, output_path)
