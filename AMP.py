@@ -1,5 +1,5 @@
 import random
-
+random.seed(485)
 import pandas as pd
 
 MAX_SEQ_NUM = 10000
@@ -98,4 +98,4 @@ def draw_len_hist():
     plt.show()
 
 if __name__ == '__main__':
-    preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP3.csv", 0)
+    preprocess_data("uniprotkb_AND_reviewed_true_AND_model_o_2025_01_26.fasta", "none-AMP4.csv", 0)
